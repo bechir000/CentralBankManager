@@ -157,7 +157,7 @@
                         <div class="alert alert-info">No records found for MM320T_SOUM_ACCORDE2106</div>
                         {% endif %}
                     </div>
-                    
+
                     <!-- MM110T Tab Content -->
                     <div class="tab-pane fade" id="mm110t-content" role="tabpanel" aria-labelledby="mm110t-tab">
                         {% if mm110t_records %}
@@ -226,7 +226,7 @@
                         <div class="alert alert-info">No records found for MM110T_OPM_JOUR2106</div>
                         {% endif %}
                     </div>
-                    
+
                     <!-- MM319T Tab Content -->
                     <div class="tab-pane fade" id="mm319t-content" role="tabpanel" aria-labelledby="mm319t-tab">
                         {% if mm319t_records %}
@@ -295,7 +295,7 @@
                         <div class="alert alert-info">No records found for MM319T_SOUM_BQ2106</div>
                         {% endif %}
                     </div>
-                    
+
                     <!-- MM334T Tab Content -->
                     <div class="tab-pane fade" id="mm334t-content" role="tabpanel" aria-labelledby="mm334t-tab">
                         {% if mm334t_records %}
@@ -402,7 +402,7 @@
                 }
             });
         });
-        
+
         // Individual record validation
         $('.approve-btn, .reject-btn').on('click', function() {
             const button = $(this);
@@ -410,33 +410,33 @@
             const recordId = row.data('id');
             const tableName = row.data('table');
             const action = button.hasClass('approve-btn') ? 'approve' : 'reject';
-            
+
             validateRecord(tableName, recordId, action, row);
         });
-        
+
         // Validate all records
         $('#approve-all-btn, #reject-all-btn').on('click', function() {
             const action = $(this).attr('id') === 'approve-all-btn' ? 'approve' : 'reject';
             const fileId = {{ xml_file.id }};
-            
+
             // Show confirmation dialog
             if (confirm(`Are you sure you want to ${action} all records?`)) {
                 validateAllRecords(fileId, action);
             }
         });
-        
+
         // Function to validate a single record
         function validateRecord(tableName, recordId, action, row) {
             // Show processing modal
             $('#processingMessage').text(`Processing record...`);
             $('#processingModal').modal('show');
-            
+
             $.ajax({
                 url: '/api/validate-record',
                 method: 'POST',
                 contentType: 'application/json',
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token() }}'
+                    'X-CSRFToken': "{{ csrf_token() }}"
                 },
                 data: JSON.stringify({
                     table: tableName,
@@ -446,21 +446,21 @@
                 success: function(response) {
                     // Hide processing modal
                     $('#processingModal').modal('hide');
-                    
+
                     // Update the row UI
                     const actionCell = row.find('td:last-child');
                     actionCell.empty();
-                    
+
                     const badge = $('<span>')
                         .addClass(`badge ${action === 'approve' ? 'bg-success' : 'bg-danger'}`)
                         .text(action === 'approve' ? 'Approved' : 'Rejected');
-                    
+
                     actionCell.append(badge);
                     row.data('status', action === 'approve' ? 'approved' : 'rejected');
-                    
+
                     // Show success message
                     alert(`Record ${action}d successfully`);
-                    
+
                     // Check if all records are processed, if so, refresh the page
                     const pendingRecords = $('tr[data-status="pending"]').length;
                     if (pendingRecords === 0) {
@@ -470,7 +470,7 @@
                 error: function(xhr) {
                     // Hide processing modal
                     $('#processingModal').modal('hide');
-                    
+
                     // Show error message
                     let errorMessage = 'An error occurred while processing your request.';
                     if (xhr.responseJSON && xhr.responseJSON.message) {
@@ -480,19 +480,19 @@
                 }
             });
         }
-        
+
         // Function to validate all records at once
         function validateAllRecords(fileId, action) {
             // Show processing modal
             $('#processingMessage').text(`Processing all records...`);
             $('#processingModal').modal('show');
-            
+
             $.ajax({
                 url: '/api/validate-all',
                 method: 'POST',
                 contentType: 'application/json',
                 headers: {
-                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRFToken': "{{ csrf_token() }}"
                 },
                 data: JSON.stringify({
                     file_id: fileId,
@@ -501,17 +501,17 @@
                 success: function(response) {
                     // Hide processing modal
                     $('#processingModal').modal('hide');
-                    
+
                     // Show success message
                     alert(`All records ${action}d successfully`);
-                    
+
                     // Refresh the page
                     location.reload();
                 },
                 error: function(xhr) {
                     // Hide processing modal
                     $('#processingModal').modal('hide');
-                    
+
                     // Show error message
                     let errorMessage = 'An error occurred while processing your request.';
                     if (xhr.responseJSON && xhr.responseJSON.message) {
