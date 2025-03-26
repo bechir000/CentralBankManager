@@ -24,6 +24,22 @@
     overflow: hidden;
 }
 
+/* Fix for DataTables column alignment when scrolling */
+.dataTable {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+.dataTables_scrollHead,
+.dataTables_scrollBody {
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.dataTables_scrollHead table,
+.dataTables_scrollBody table {
+    margin: 0 !important;
+}
+
 /* Improve data tables */
 .dataTables_wrapper .dataTables_length select,
 .dataTables_wrapper .dataTables_filter input {

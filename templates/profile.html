@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile - Central Bank XML Processor{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Profile Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="bg-light mx-auto rounded-circle d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                            <i class="fas fa-user fa-3x text-primary"></i>
+                        </div>
+                    </div>
+                    
+                    <h5 class="card-title text-center">{{ current_user.username }}</h5>
+                    <p class="card-text text-center text-muted">{{ current_user.email }}</p>
+                    
+                    <hr>
+                    
+                    <div class="mb-2 d-flex justify-content-between">
+                        <strong>Role:</strong>
+                        <span class="badge bg-info">{{ current_user.role.name if current_user.role else 'No role' }}</span>
+                    </div>
+                    
+                    <div class="mb-2 d-flex justify-content-between">
+                        <strong>Status:</strong>
+                        {% if current_user.is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-2 d-flex justify-content-between">
+                        <strong>Member since:</strong>
+                        <span>{{ current_user.created_at.strftime('%Y-%m-%d') }}</span>
+                    </div>
+                    
+                    <div class="mb-2 d-flex justify-content-between">
+                        <strong>Last login:</strong>
+                        <span>{{ current_user.last_login.strftime('%Y-%m-%d %H:%M') if current_user.last_login else 'Never' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Change Password</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('profile') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.current_password.label(class="form-label") }}
+                            {{ form.current_password(class="form-control") }}
+                            {% for error in form.current_password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.new_password.label(class="form-label") }}
+                            {{ form.new_password(class="form-control") }}
+                            {% for error in form.new_password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.confirm_password.label(class="form-label") }}
+                            {{ form.confirm_password(class="form-control") }}
+                            {% for error in form.confirm_password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card mt-4 shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Your Recent Activity</h4>
+                </div>
+                <div class="card-body">
+                    <h5>Recently Uploaded Files</h5>
+                    {% if current_user.xml_files.count() > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Bank</th>
+                                    <th>Upload Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for file in current_user.xml_files.order_by(XMLFile.upload_date.desc()).limit(5).all() %}
+                                <tr>
+                                    <td>{{ file.filename }}</td>
+                                    <td>{{ file.bank_name }}</td>
+                                    <td>{{ file.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        {% if file.status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                        {% elif file.status == 'validated' %}
+                                        <span class="badge bg-success">Validated</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ file.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">You haven't uploaded any files yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Central Bank XML Processor{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Welcome, {{ current_user.username }}</h3>
+                    <p class="card-text">User role: <span class="badge bg-info">{{ current_user.role.name }}</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 border-primary">
+                <div class="card-body text-center">
+                    <div class="card-icon mb-3">
+                        <i class="bi bi-file-earmark-arrow-up"></i>
+                    </div>
+                    <h5 class="card-title">Upload Files</h5>
+                    <p class="card-text">Upload new XML files for processing.</p>
+                    <a href="{{ url_for('upload') }}" class="btn btn-primary">Upload</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 border-success">
+                <div class="card-body text-center">
+                    <div class="card-icon mb-3">
+                        <i class="bi bi-check2-circle"></i>
+                    </div>
+                    <h5 class="card-title">Validate Data</h5>
+                    <p class="card-text">Review and validate uploaded XML files.</p>
+                    <a href="{{ url_for('validate') }}" class="btn btn-success">Validate</a>
+                </div>
+            </div>
+        </div>
+
+        {% if current_user.has_role('admin') %}
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 border-warning">
+                <div class="card-body text-center">
+                    <div class="card-icon mb-3">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h5 class="card-title">User Management</h5>
+                    <p class="card-text">Manage system users and roles.</p>
+                    <a href="{{ url_for('users') }}" class="btn btn-warning">Manage Users</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 border-info">
+                <div class="card-body text-center">
+                    <div class="card-icon mb-3">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <h5 class="card-title">Reports</h5>
+                    <p class="card-text">View reports and analytics.</p>
+                    <a href="#" class="btn btn-info">View Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Recent Activity</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Bank</th>
+                                    <th>Upload Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for file in recent_files %}
+                                <tr>
+                                    <td>{{ file.filename }}</td>
+                                    <td>{{ file.bank_name }}</td>
+                                    <td>{{ file.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        {% if file.status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                        {% elif file.status == 'validated' %}
+                                        <span class="badge bg-success">Validated</span>
+                                        {% elif file.status == 'rejected' %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ file.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('review', file_id=file.id) }}" class="btn btn-sm btn-primary">Review</a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No recent files found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

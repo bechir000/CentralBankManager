@@ -22,34 +22,39 @@
             </div>
             <div class="card-body">
                 <form method="POST" enctype="multipart/form-data" id="upload-form">
+                    {{ form.hidden_tag() }}
+                    
                     <div class="mb-3">
-                        <label for="bank_name" class="form-label fw-bold">Bank Name</label>
-                        <input type="text" class="form-control" id="bank_name" name="bank_name" required 
-                               placeholder="Enter the name of the bank submitting this data">
+                        {{ form.bank_name.label(class="form-label fw-bold") }}
+                        {{ form.bank_name(class="form-control", placeholder="Enter the name of the bank submitting this data") }}
+                        {% for error in form.bank_name.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
                         <div class="form-text">This helps identify the source of the XML data for later reference.</div>
                     </div>
                     
                     <div class="mb-4">
                         <div class="upload-area p-5 rounded border text-center" id="drop-area">
                             <i class="fas fa-cloud-upload-alt fa-4x mb-3 text-primary"></i>
-                            <h4>Drag & Drop XML Files Here</h4>
+                            <h4>Drag & Drop XML File Here</h4>
                             <p>or</p>
                             <div class="mb-3">
-                                <input type="file" class="form-control" name="xml_files" id="xml-files" accept=".xml" multiple required>
+                                {{ form.xml_file(class="form-control", id="xml-files", accept=".xml") }}
+                                {% for error in form.xml_file.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
                             </div>
-                            <small class="text-muted">You can select multiple files at once</small>
+                            <small class="text-muted">Only XML files are accepted</small>
                         </div>
                     </div>
 
                     <div class="mb-3 d-none" id="selected-files-container">
-                        <label class="form-label">Selected Files:</label>
+                        <label class="form-label">Selected File:</label>
                         <ul class="list-group" id="selected-files-list"></ul>
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg" id="upload-button">
-                            <i class="fas fa-upload me-2"></i> Upload Files
-                        </button>
+                        {{ form.submit(class="btn btn-primary btn-lg", id="upload-button") }}
                     </div>
                 </form>
             </div>
@@ -77,7 +82,7 @@
                     </li>
                     <li class="list-group-item">
                         <i class="fas fa-check-circle text-success me-2"></i>
-                        You can upload multiple files at once
+                        Upload one file at a time
                     </li>
                     <li class="list-group-item">
                         <i class="fas fa-info-circle text-info me-2"></i>
