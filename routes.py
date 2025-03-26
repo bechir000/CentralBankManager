@@ -86,12 +86,7 @@ def upload():
 @app.route('/validate')
 @login_required
 def validate():
-    # Check if user is admin
-    if not current_user.has_role('admin'):
-        flash('Only administrators can validate files', 'danger')
-        return redirect(url_for('index'))
-        
-    # Get all pending XML files
+    # Get all pending XML files - allow any authenticated user
     pending_files = XMLFile.query.filter_by(status='pending').all()
     return render_template('validate.html', pending_files=pending_files)
 
