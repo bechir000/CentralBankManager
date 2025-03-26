@@ -395,16 +395,17 @@
             $(table).DataTable({
                 pageLength: 10,
                 scrollX: true,
+                scrollY: '50vh',
                 scrollCollapse: true,
                 autoWidth: false,
+                fixedHeader: true,
                 language: {
                     search: "Search records:",
                     lengthMenu: "Show _MENU_ records per page"
-                },
-                initComplete: function() {
-                    $(table).wrap('<div class="table-responsive" style="width:100%"/>');
                 }
             });
+            // Adjust columns width after initialization
+            $(table).DataTable().columns.adjust();
         });
 
         // Individual record validation
