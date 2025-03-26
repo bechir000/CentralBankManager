@@ -488,6 +488,9 @@
                 url: '/api/validate-all',
                 method: 'POST',
                 contentType: 'application/json',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                },
                 data: JSON.stringify({
                     file_id: fileId,
                     action: action
