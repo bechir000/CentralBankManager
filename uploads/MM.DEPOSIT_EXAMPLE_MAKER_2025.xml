@@ -1,0 +1,151 @@
+<deal instrument="MM.DEPOSIT" name="MM.DEPOSIT.USD" role="MAKER">
+<gid_id>700576629</gid_id>
+<comments>1613e02c-89ff-4e2b-b015-05b01534e5fd-6 Months</comments>
+<mmets_id>171936ac-3317-4aed-8923-f889301c8199:M</mmets_id>
+<requires_publishing>Y</requires_publishing>
+<in_competition>N</in_competition>
+<manual>N</manual>
+<deal_date>20250313</deal_date>
+<deal_time>09:07:14</deal_time>
+<trade_date>20250313</trade_date>
+<trade_time>09:07:14</trade_time>
+<submit_id>171936ac-3317-4aed-8923-f889301c8199:M-171936ac-3317-4aed-8923-f889301c8199:M</submit_id>
+<source_of_data>11</source_of_data>
+<origin_of_deal>99</origin_of_deal>
+<status>Completed</status>
+<execution_style>rfq</execution_style>
+<execution_id>171936ac-3317-4aed-8923-f889301c8199:M</execution_id>
+<message_type>TRADE</message_type>
+<execution_type>NEW</execution_type>
+<deal_datetime>20250313090954</deal_datetime>
+<source_id>AuctionsFIXPublisher01LBN</source_id>
+<taker_group_full_name>RTN Test Bank</taker_group_full_name>
+<taker_full_name>appopsfls-eikon1@lseg.com</taker_full_name>
+<taker_name>TEST2</taker_name>
+<taker_id>TEST2</taker_id>
+<maker_group_full_name>Refinitiv (Internal)</maker_group_full_name>
+<maker_group_name>XXAH</maker_group_name>
+<maker_full_name>appopsfls-eikon1@lseg.com</maker_full_name>
+<maker_name>XXAH</maker_name>
+<maker_id>XXAH</maker_id>
+<proxy_group_full_name>Auctions FIX Publisher</proxy_group_full_name>
+<proxy_group_name>AUCT</proxy_group_name>
+<submit_group>AuctionsFIXPublisher01LBN</submit_group>
+<version type="#">2</version>
+<last_modified by="IDCProdReceiver01LBN">20250313090954</last_modified>
+<lbn_confirmations>
+<confirmation lbn="AuctionsFIXPublisher01LBN" num="0" source_party_num="0">Delivered</confirmation>
+<confirmation lbn="fxt_XXAH1_TOF_LBN" num="1" source_party_num="1"/>
+<confirmation lbn="fxt_XXAH2_TOF_LBN" num="2" source_party_num="1"/>
+<confirmation lbn="IDCProdReceiver01LBN" num="3" source_party_num="5">Delivered</confirmation>
+<confirmation lbn="DTaaSPrem1784LBN" num="4" source_party_num="-1">Delivered</confirmation>
+</lbn_confirmations>
+<mm_deal type="DEPOSIT">
+<ccy>USD</ccy>
+<amount_dps>0</amount_dps>
+<basis>360</basis>
+<lastmkt>AUCTIONS</lastmkt>
+<leg num="0" taker_borrows="N">
+<amount>4000000</amount>
+<maturity_amount>4069564.444</maturity_amount>
+<interest_amount>69564.444</interest_amount>
+<interest_frequency>At Maturity</interest_frequency>
+<value_date type="SPOT">20250317</value_date>
+<maturity_date type="6M">20250915</maturity_date>
+<quote>
+<all_in>3.44</all_in>
+</quote>
+<requirement num="0" taker_borrows="N">
+<amount>4000000</amount>
+<maturity_amount>4069564.444</maturity_amount>
+<interest_amount>69564.444</interest_amount>
+<maker_account>DO NOT EDIT RTN Testing Account</maker_account>
+<settlement_details num="0" role="MAKER" standard="Y" type="value_date">
+<agent num="0" type="RECEIVING_AGENT">
+<agent_line num="0">00112233</agent_line>
+<agent_line num="1">NY12345</agent_line>
+</agent>
+<line num="0">00112233</line>
+<line num="1">NY12345</line>
+</settlement_details>
+<settlement_details num="1" role="TAKER" standard="Y" type="maturity_date">
+<agent num="0" type="RECEIVING_AGENT">
+<agent_line num="0">1234567</agent_line>
+<agent_line num="1">AA12345</agent_line>
+</agent>
+<line num="0">1234567</line>
+<line num="1">AA12345</line>
+</settlement_details>
+<remarks num="0">
+<remark_line num="0">#UNSPECIFIED#</remark_line>
+</remarks>
+</requirement>
+</leg>
+</mm_deal>
+<participants num="0">
+<role>proxy_group</role>
+<legal_group>AUCT</legal_group>
+<deal_id_source>Custom Code</deal_id_source>
+</participants>
+<participants num="1">
+<role>maker_group</role>
+<legal_group>XXAH</legal_group>
+<deal_id_source>Custom Code</deal_id_source>
+</participants>
+<participants num="2">
+<role>maker</role>
+<legal_group>XXAH</legal_group>
+<deal_id_source>Custom Code</deal_id_source>
+</participants>
+<participants num="3">
+<role>taker_group</role>
+<legal_group>#UNSPECIFIED#</legal_group>
+<deal_id_source>Custom Code</deal_id_source>
+</participants>
+<participants num="4">
+<role>taker</role>
+<legal_group>TEST2</legal_group>
+<deal_id_source>Custom Code</deal_id_source>
+</participants>
+<party active="Y" notify="NEVER" num="0" role="PUBLISHER">
+<party_id name="SOURCE" num="0" type="TEXT">AUCTIONS</party_id>
+<party_id name="ID" num="1" type="PUBLISHER_CODE">AUCT</party_id>
+<party_id name="FULL_NAME" num="2" type="TEXT">Auctions FIX Publisher</party_id>
+</party>
+<party active="Y" notify="NEVER" num="1" related_to="MAKER" role="COUNTERPARTY">
+<party_id name="ID" no_ruid_mapping="USE_SOURCE_VALUE" num="0" type="TCID">XXAH</party_id>
+<party_id name="FULL_NAME" num="1" type="TEXT">Refinitiv (Internal)</party_id>
+<sub_party num="0" role="EXECUTING_TRADER">
+<sub_party_id name="ID" num="0" source_party_num="0" type="PUBLISHER_ID">XXAH</sub_party_id>
+<sub_party_id name="FULL_NAME" num="1" type="TEXT">appopsfls-eikon1@lseg.com</sub_party_id>
+<sub_party_id name="NAME" num="2" type="TEXT">XXAH</sub_party_id>
+<sub_party_id name="EMAIL" num="3" type="TEXT">appopsfls-eikon1@lseg.com</sub_party_id>
+<sub_party_id name="ID" num="4" type="TEXT">XXAH</sub_party_id>
+</sub_party>
+<party_id name="ID" num="2" type="RUID">XXAH</party_id>
+</party>
+<party active="N" notify="NEVER" num="2" related_to="TAKER" role="COUNTERPARTY">
+<party_id name="ID" no_ruid_mapping="USE_SOURCE_VALUE" num="0" type="TCID">#UNSPECIFIED#</party_id>
+<party_id name="FULL_NAME" num="1" type="TEXT">RTN Test Bank</party_id>
+<sub_party num="0" role="EXECUTING_TRADER">
+<sub_party_id name="ID" num="0" source_party_num="0" type="PUBLISHER_ID">TEST2</sub_party_id>
+<sub_party_id name="FULL_NAME" num="1" type="TEXT">appopsfls-eikon1@lseg.com</sub_party_id>
+<sub_party_id name="NAME" num="2" type="TEXT">TEST2</sub_party_id>
+<sub_party_id name="EMAIL" num="3" type="TEXT">appopsfls-eikon1@lseg.com</sub_party_id>
+<sub_party_id name="ID" num="4" type="TEXT">TEST2</sub_party_id>
+</sub_party>
+</party>
+<party active="N" num="3" role="REPORTING_CENTER">
+<party_id name="ID" num="0" type="TEXT">#UNSPECIFIED#</party_id>
+<trade_id num="0" reference="leg[@num=0]" type="UNQ_TRANSACTION_ID">AUCTIONS001MMC202503130069L0</trade_id>
+</party>
+<party active="N" num="4" role="EXECUTING_VENUE">
+<trade_id num="0" reference="leg[@num=0]" type="TIC">AUCTIONS001MMC202503130069L0</trade_id>
+<trade_id num="1" reference="leg[@num=0]" type="TRANSACTION_REF">AUCTIONS001MMC202503130069L0</trade_id>
+</party>
+<party active="Y" notify="NEVER" num="5" role="THIRD_PARTY">
+<party_id name="ID" num="0" type="RUID">IDC_PROD</party_id>
+<party_confirmation datetime="202503130909540831" downstream_id="700576629" lbn="IDCProdReceiver01LBN" num="0" reference="deal" type="NEW">Confirmed</party_confirmation>
+<status datetime="202503130909540831">ACCEPTED</status>
+</party>
+</deal>

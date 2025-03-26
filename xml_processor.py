@@ -1,4 +1,4 @@
-import xml.etree.ElementTree as ET
+from lxml import etree as ET
 from datetime import datetime, timedelta
 import logging
 from app import db
@@ -41,16 +41,21 @@ def validate_xml_structure(xml_file):
         tree = ET.parse(xml_file)
         root = tree.getroot()
         
-        # Check for required elements
-        required_elements = [
-            ".//mm_deal",
-            ".//value_date",
-            ".//maturity_date"
-        ]
+        # Check for required elements for deposit deal
+        if root.find(".//mm_deal") is None:
+            raise ValueError("Missing required element: mm_deal")
         
-        for element in required_elements:
-            if root.find(element) is None:
-                raise ValueError(f"Missing required element: {element}")
+        # Check for leg element
+        if root.find(".//leg") is None:
+            raise ValueError("Missing required element: leg")
+            
+        # Check for value_date in the first leg
+        if root.find(".//leg/value_date") is None:
+            raise ValueError("Missing required element: value_date")
+            
+        # Check for maturity_date in the first leg
+        if root.find(".//leg/maturity_date") is None:
+            raise ValueError("Missing required element: maturity_date")
                 
         return True, "XML structure is valid"
     except Exception as e:
@@ -78,13 +83,56 @@ def process_xml_file(xml_file_path, xml_file_id):
 def process_deal(deal, deal_idx, xml_file_id):
     """Process a single mm_deal element from the XML"""
     try:
-        # Extract common values
-        value_date_str = find_xml_element(deal, ".//value_date")
-        maturity_date_str = find_xml_element(deal, ".//maturity_date")
+        # Get the root element (parent of mm_deal)
+        root = deal.getparent()
         
-        if not value_date_str or not maturity_date_str:
-            raise ValueError("Missing required date fields")
+        # Extract maker_id from the XML structure
+        maker_id_elem = root.find(".//maker_id")
+        maker_id = maker_id_elem.text if maker_id_elem is not None else "00"
+        
+        # Truncate maker_id to 2 characters if needed
+        if len(maker_id) > 2:
+            logger.warning(f"Truncating maker_id from {maker_id} to {maker_id[:2]}")
+            maker_id = maker_id[:2]
+        
+        # Extract taker_id from the XML structure
+        taker_id_elem = root.find(".//taker_id")
+        taker_id = taker_id_elem.text if taker_id_elem is not None else None
+        
+        if not taker_id:
+            # Fall back to sub_party id if available
+            taker_party = root.find(".//party[@role='COUNTERPARTY'][@related_to='TAKER']")
+            if taker_party is not None:
+                taker_sub_party = taker_party.find(".//sub_party[@role='EXECUTING_TRADER']")
+                if taker_sub_party is not None:
+                    taker_id_elem = taker_sub_party.find(".//sub_party_id[@name='ID']")
+                    if taker_id_elem is not None:
+                        taker_id = taker_id_elem.text
+        
+        if not taker_id or taker_id == "#UNSPECIFIED#":
+            # Use a default value if not found
+            taker_id = "01"
             
+        # Truncate taker_id to 2 characters if needed
+        if len(taker_id) > 2:
+            logger.warning(f"Truncating taker_id from {taker_id} to {taker_id[:2]}")
+            taker_id = taker_id[:2]
+        
+        # Find the first leg element
+        leg = deal.find(".//leg")
+        if leg is None:
+            raise ValueError("No leg element found in the deal")
+        
+        # Extract dates from the leg
+        value_date_elem = leg.find(".//value_date")
+        maturity_date_elem = leg.find(".//maturity_date")
+        
+        if value_date_elem is None or maturity_date_elem is None:
+            raise ValueError("Missing required date fields in the leg")
+            
+        value_date_str = value_date_elem.text
+        maturity_date_str = maturity_date_elem.text
+        
         value_date = convert_date(value_date_str)
         maturity_date = convert_date(maturity_date_str)
         
@@ -94,37 +142,37 @@ def process_deal(deal, deal_idx, xml_file_id):
         # Date of maturity minus 1 day for DATE_ECH
         date_ech = maturity_date - timedelta(days=1)
         
-        # Get maker_id and taker_id
-        maker_id = find_xml_element(deal, ".//maker_id") or "00"
-        taker_id = find_xml_element(deal, ".//taker_id")
+        # Get amount and rate from the leg
+        amount_elem = leg.find(".//amount")
+        amount = float(amount_elem.text) if amount_elem is not None else None
         
-        if not taker_id:
-            raise ValueError("Missing taker_id (RECEVEUR)")
-            
-        # Get amount and rate
-        amount = None
         rate = None
-        
-        for leg in deal.findall(".//leg"):
-            amount_elem = leg.find(".//amount")
-            if amount_elem is not None:
-                amount = float(amount_elem.text)
-                
-            quote = leg.find(".//quote")
-            if quote is not None:
-                all_in = quote.find(".//all_in")
-                if all_in is not None:
-                    rate = float(all_in.text)
+        quote_elem = leg.find(".//quote")
+        if quote_elem is not None:
+            all_in_elem = quote_elem.find(".//all_in")
+            if all_in_elem is not None:
+                rate = float(all_in_elem.text)
         
         if amount is None or rate is None:
-            raise ValueError("Missing amount or rate information")
+            raise ValueError("Missing amount or rate information in the leg")
         
         # Create a NUM_OPER value (increment for each deal)
         num_oper = str((deal_idx % 9) + 1)  # Generate values 1-9 as string
         
+        # Extract deal_date if available
+        deal_date_elem = root.find(".//deal_date")
+        deal_date = None
+        if deal_date_elem is not None:
+            try:
+                deal_date = convert_date(deal_date_elem.text)
+            except:
+                deal_date = datetime.now().date()
+        else:
+            deal_date = datetime.now().date()
+        
         # Create common record data
         common_data = {
-            "DATE_OPER": value_date,
+            "DATE_OPER": deal_date,
             "CODE_OPER": 70,
             "DONNEUR": maker_id,
             "RECEVEUR": taker_id,
@@ -146,6 +194,9 @@ def process_deal(deal, deal_idx, xml_file_id):
             "CODE_ISIN": "N",
             "xml_file_id": xml_file_id
         }
+        
+        # Logging for debugging
+        logger.info(f"Processed deal with data: maker_id={maker_id}, taker_id={taker_id}, amount={amount}, rate={rate}")
         
         # Create records in all 4 intermediate tables
         mm320t_record = MM320T_SOUM_ACCORDE2106_Int(**common_data)
