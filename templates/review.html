@@ -435,6 +435,9 @@
                 url: '/api/validate-record',
                 method: 'POST',
                 contentType: 'application/json',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                },
                 data: JSON.stringify({
                     table: tableName,
                     id: recordId,
