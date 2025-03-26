@@ -1,0 +1,187 @@
+Contexte :
+
+Créer une application web permettant à un gestionnaire de banque centrale de télécharger plusieurs fichiers XML envoyés par des banques. L'application devra extraire les données des fichiers XML et les mapper vers 4 tables intermédiaires dans une base de données MySQL. Ensuite, le gestionnaire pourra valider les données pour chaque banque et chaque table. Une fois les données validées, elles seront transférées dans des tables finales dans la base de données.
+
+Objectifs et fonctionnalités attendues :
+Téléchargement des fichiers XML :
+
+L'application doit permettre au gestionnaire de télécharger plusieurs fichiers XML depuis l'interface web.
+Les fichiers XML doivent être validés pour s'assurer qu'ils respectent le format attendu.
+Extraction des données des fichiers XML :
+
+Une fois téléchargés, les fichiers XML doivent être analysés et les données extraites automatiquement.
+L'extraction doit être effectuée pour chaque fichier XML, en récupérant des données spécifiques comme le banque_id, transaction_id, montant, et date_transaction (les champs peuvent être différents selon le format des fichiers XML).
+Mapping des données vers des tables intermédiaires :
+
+Après l'extraction des données, elles doivent être insérées dans 4 tables intermédiaires dans la base de données MySQL.
+Exemple de tables intermédiaires :
+table_banque_1
+table_banque_2
+table_banque_3
+table_banque_4
+Chaque table intermédiaire contiendra des colonnes comme banque_id, transaction_id, montant, date_transaction.
+Validation des données :
+
+L'application doit permettre au gestionnaire de visualiser les données extraites pour chaque banque et pour chaque table.
+Le gestionnaire pourra valider ou rejeter les enregistrements.
+Une fois validées, les données doivent être transférées dans les tables finales.
+Stockage des données validées dans les tables finales :
+
+Une fois validées, les données doivent être transférées dans 4 tables finales dans la base de données MySQL.
+Exemple de tables finales :
+table_finale_1
+table_finale_2
+table_finale_3
+table_finale_4
+Chaque table finale doit inclure une colonne supplémentaire pour le statut de validation.
+Technologies demandées :
+Backend : Utiliser Python avec un framework comme Flask ou Django pour la gestion des fichiers XML, l'extraction des données, le mapping et la validation.
+Frontend : Créer une interface web en HTML, CSS, et JavaScript (optionnellement, utiliser React ou Vue.js pour une expérience utilisateur moderne).
+Base de données : MySQL pour stocker les données dans les tables intermédiaires et finales.
+Structure des Tables MySQL :
+Tables intermédiaires :
+
+table_banque_1, table_banque_2, table_banque_3, table_banque_4
+Chaque table contient des informations extraites des fichiers XML (ex : banque_id, transaction_id, montant, date_transaction).
+Tables finales :
+
+table_finale_1, table_finale_2, table_finale_3, table_finale_4
+Les mêmes colonnes que les tables intermédiaires, avec un champ supplémentaire statut_validation pour indiquer si les données ont été validées.
+Processus de Validation des Données :
+Une fois les données extraites et insérées dans les tables intermédiaires, le gestionnaire pourra :
+
+Consulter chaque table pour chaque banque.
+Approuver ou rejeter les enregistrements.
+Lorsqu'un enregistrement est validé, il sera marqué comme validé et déplacé vers la table finale correspondante.
+Les données validées dans les tables finales seront définitivement enregistrées et accessibles pour d'autres opérations ou analyses.
+
+Détails supplémentaires :
+Sécurité :
+
+Implémenter un système de sécurité pour l'upload des fichiers XML afin de limiter les risques de téléchargement de fichiers malveillants.
+Authentification et autorisation des utilisateurs pour garantir que seules les personnes autorisées peuvent valider ou rejeter des données.
+Performances :
+
+L'application doit être capable de gérer plusieurs fichiers XML téléchargés en même temps, avec un système de traitement en arrière-plan pour l'extraction et le mapping des données.
+Interface utilisateur :
+
+L'interface web doit être intuitive et permettre au gestionnaire de visualiser rapidement les données extraites, de les valider, et de voir un historique des fichiers XML traités.
+Utiliser des composants de validation clairs (boutons "Valider" ou "Rejeter", etc.).
+Instructions pour Cursor :
+Crée un projet web complet avec une interface utilisateur pour l'upload et la gestion des fichiers XML.
+Implémente une fonctionnalité backend pour l'extraction, le mapping et la validation des données, en utilisant Python (Flask ou Django).
+Utilise MySQL comme base de données pour stocker les données intermédiaires et finales.
+Assure-toi que le processus d'upload des fichiers XML soit sécurisé et que les données extraites soient bien mappées vers les tables intermédiaires.
+Fournis un système de validation simple et clair pour le gestionnaire afin de valider ou rejeter les données extraites.
+
+voici la premier table comme suit : 
+Correspondance des Champs XML avec MM320T_SOUM_ACCORDE2106
+Colonne Table	Type SQL	Source XML / Règle de Transformation	Remarques
+DATE_OPER	DATE	<value_date>	Convertir YYYYMMDD en format DATE
+CODE_OPER	NUMBER(2,0)	70 (valeur par défaut)	Valeur fixe
+DONNEUR	VARCHAR2(2 BYTE)	<maker_id>	ID du Market Maker (entité soumissionnaire) par defaut 00
+RECEVEUR	VARCHAR2(2 BYTE)	<taker_id>	ID du Market Taker (entité bénéficiaire)
+NUM_OPER	VARCHAR2(1 BYTE)	Incrémentable	Compteur auto-incrémenté
+MONT	NUMBER(15,3)	<mm_deal>/<leg>/<amount>	Montant soumis dans la transaction
+TAUX	NUMBER(7,5)	<mm_deal>/<leg>/<quote>/<all_in>	Taux d'intérêt appliqué
+DUREE	NUMBER(4,0)	Calculée : <maturity_date> - <value_date>	Différence entre les deux dates
+DATE_ECH	DATE	maturity_date - 1 jour	maturity_date - timedelta(days=1)
+TYPE_PLACE	VARCHAR2(5 BYTE)	"TERME" (valeur par défaut)	Valeur fixe
+DATE_REGL	DATE	<maturity_date>	Date de règlement convertie en DATE
+FLAGCPT_ADMIS	VARCHAR2(1 BYTE)	'' (champ vide)	Deux espaces vides ' '
+FLAGCPT_TOMBE	VARCHAR2(1 BYTE)	'' (champ vide)	Deux espaces vides ' '
+NBRBON	NUMBER(5,0)	NULL	Aucune valeur définie
+ETAT_OPER	VARCHAR2(1 BYTE)	'V' (valeur par défaut)	Indique que l'opération est validée
+NUM_OPER_GESTION	NUMBER(7,0)	NULL	Aucune valeur définie
+UTILISATEUR	CHAR(10 BYTE)	NULL	Aucune valeur définie
+DATE_SAISIE	DATE	Date système lors de l’upload	Utilisation de datetime.now()
+ACCEP_CP	VARCHAR2(1 BYTE)	NULL	Aucune valeur définie
+CODE_ISIN	VARCHAR2(12 BYTE)	'N' (valeur par défaut)	Valeur fixe
+Explications supplémentaires :
+Conversion des dates :
+<value_date> et <maturity_date> doivent être convertis en format DATE.
+DATE_ECH est calculé comme maturity_date - 1 jour (via timedelta(days=1)).
+DATE_SAISIE correspond à la date système lors de l'upload (datetime.now()).
+Gestion des champs vides :
+FLAGCPT_ADMIS et FLAGCPT_TOMBE sont définis comme deux espaces ' '.
+NBRBON, NUM_OPER_GESTION, UTILISATEUR, et ACCEP_CP sont NULL.
+
+
+les autres 3 tables sont comme suit : 
+
+1️⃣ Mapping pour la Table MM110T_OPM_JOUR2106
+Cette table est similaire à MM010T_OPM_JOUR2106. Voici le mapping détaillé :
+
+Colonne Table Type SQL Source XML / Règle de Transformation Remarques
+DATE_OPER DATE <value_date> Convertir YYYYMMDD en format DATE
+CODE_OPER NUMBER(2,0) 70 (valeur par défaut) Valeur fixe
+DONNEUR VARCHAR2(2 BYTE) <maker_id> (si vide, prendre '00') ID du Market Maker
+RECEVEUR VARCHAR2(2 BYTE) <taker_id> ID du Market Taker
+NUM_OPER VARCHAR2(1 BYTE) Incrémentable Compteur auto-incrémenté
+MONT NUMBER(15,3) <mm_deal>/<leg>/<amount> Montant soumis dans la transaction
+TAUX NUMBER(7,5) <mm_deal>/<leg>/<quote>/<all_in> Taux d'intérêt appliqué
+DUREE NUMBER(4,0) Calculée : <maturity_date> - <value_date> Différence entre les deux dates
+DATE_ECH DATE maturity_date - 1 jour maturity_date - timedelta(days=1)
+TYPE_PLACE VARCHAR2(5 BYTE) "TERME" (valeur par défaut) Valeur fixe
+DATE_REGL DATE <maturity_date> Date de règlement convertie en DATE
+FLAGCPT_ADMIS VARCHAR2(1 BYTE) '' (champ vide) Deux espaces vides ' '
+FLAGCPT_TOMBE VARCHAR2(1 BYTE) '' (champ vide) Deux espaces vides ' '
+NBRBON NUMBER(5,0) NULL Aucune valeur définie
+ETAT_OPER VARCHAR2(1 BYTE) 'V' (valeur par défaut) Indique que l'opération est validée
+NUM_OPER_GESTION NUMBER(7,0) NULL Aucune valeur définie
+UTILISATEUR CHAR(10 BYTE) NULL Aucune valeur définie
+DATE_SAISIE DATE Date système lors de l’upload Utilisation de datetime.now()
+ACCEP_CP VARCHAR2(1 BYTE) NULL Aucune valeur définie
+CODE_ISIN VARCHAR2(12 BYTE) 'N' (valeur par défaut) Valeur fixe
+
+
+2️⃣ Mapping pour la Table MM319T_SOUM_BQ2106
+Cette table est une variante des autres, mais suit une structure similaire :
+
+Colonne Table Type SQL Source XML / Règle de Transformation Remarques
+DATE_OPER DATE <value_date> Convertir YYYYMMDD en format DATE
+CODE_OPER NUMBER(2,0) 70 (valeur par défaut) Valeur fixe
+DONNEUR VARCHAR2(2 BYTE) '00' (valeur par défaut) Si vide, mettre '00'
+RECEVEUR VARCHAR2(2 BYTE) <taker_id> ID du Market Taker
+NUM_OPER VARCHAR2(1 BYTE) Incrémentable Compteur auto-incrémenté
+MONT NUMBER(15,3) <mm_deal>/<leg>/<amount> Montant soumis dans la transaction
+TAUX NUMBER(7,5) <mm_deal>/<leg>/<quote>/<all_in> Taux d'intérêt appliqué
+DUREE NUMBER(4,0) Calculée : <maturity_date> - <value_date> Différence entre les deux dates
+DATE_ECH DATE maturity_date - 1 jour maturity_date - timedelta(days=1)
+TYPE_PLACE VARCHAR2(5 BYTE) "TERME" (valeur par défaut) Valeur fixe
+DATE_REGL DATE <maturity_date> Date de règlement convertie en DATE
+FLAGCPT_ADMIS VARCHAR2(1 BYTE) '' (champ vide) Deux espaces vides ' '
+FLAGCPT_TOMBE VARCHAR2(1 BYTE) '' (champ vide) Deux espaces vides ' '
+NBRBON NUMBER(5,0) NULL Aucune valeur définie
+ETAT_OPER VARCHAR2(1 BYTE) 'V' (valeur par défaut) Indique que l'opération est validée
+NUM_OPER_GESTION NUMBER(7,0) NULL Aucune valeur définie
+UTILISATEUR CHAR(10 BYTE) NULL Aucune valeur définie
+DATE_SAISIE DATE Date système lors de l’upload Utilisation de datetime.now()
+ACCEP_CP VARCHAR2(1 BYTE) NULL Aucune valeur définie
+CODE_ISIN VARCHAR2(12 BYTE) 'N' (valeur par défaut) Valeur fixe
+
+
+2️⃣ Mapping pour la Table MM334T_SOUM_BQ2106
+Cette table est une variante des autres, mais suit une structure similaire :
+
+Colonne Table Type SQL Source XML / Règle de Transformation Remarques
+DATE_OPER DATE <value_date> Convertir YYYYMMDD en format DATE
+CODE_OPER NUMBER(2,0) 70 (valeur par défaut) Valeur fixe
+DONNEUR VARCHAR2(2 BYTE) '00' (valeur par défaut) Si vide, mettre '00'
+RECEVEUR VARCHAR2(2 BYTE) <taker_id> ID du Market Taker
+NUM_OPER VARCHAR2(1 BYTE) Incrémentable Compteur auto-incrémenté
+MONT NUMBER(15,3) <mm_deal>/<leg>/<amount> Montant soumis dans la transaction
+TAUX NUMBER(7,5) <mm_deal>/<leg>/<quote>/<all_in> Taux d'intérêt appliqué
+DUREE NUMBER(4,0) Calculée : <maturity_date> - <value_date> Différence entre les deux dates
+DATE_ECH DATE maturity_date - 1 jour maturity_date - timedelta(days=1)
+TYPE_PLACE VARCHAR2(5 BYTE) "TERME" (valeur par défaut) Valeur fixe
+DATE_REGL DATE <maturity_date> Date de règlement convertie en DATE
+FLAGCPT_ADMIS VARCHAR2(1 BYTE) '' (champ vide) Deux espaces vides ' '
+FLAGCPT_TOMBE VARCHAR2(1 BYTE) '' (champ vide) Deux espaces vides ' '
+NBRBON NUMBER(5,0) NULL Aucune valeur définie
+ETAT_OPER VARCHAR2(1 BYTE) 'V' (valeur par défaut) Indique que l'opération est validée
+NUM_OPER_GESTION NUMBER(7,0) NULL Aucune valeur définie
+UTILISATEUR CHAR(10 BYTE) NULL Aucune valeur définie
+DATE_SAISIE DATE Date système lors de l’upload Utilisation de datetime.now()
+ACCEP_CP VARCHAR2(1 BYTE) NULL Aucune valeur définie
+CODE_ISIN VARCHAR2(12 BYTE) 'N' (valeur par défaut) Valeur fixe
