@@ -389,16 +389,20 @@
 {% block scripts %}
 <script>
     $(document).ready(function() {
-        // Initialize DataTables
+        // Initialize DataTables with proper scrolling
         const tables = ['#mm320t-table', '#mm110t-table', '#mm319t-table', '#mm334t-table'];
         tables.forEach(table => {
             $(table).DataTable({
                 pageLength: 10,
                 scrollX: true,
                 scrollCollapse: true,
+                autoWidth: false,
                 language: {
                     search: "Search records:",
                     lengthMenu: "Show _MENU_ records per page"
+                },
+                initComplete: function() {
+                    $(table).wrap('<div class="table-responsive" style="width:100%"/>');
                 }
             });
         });
@@ -503,8 +507,8 @@
                     $('#processingModal').modal('hide');
 
                     // Show success notification
-                    $('.notification-success').remove(); // remove previous notification if exists.
-                    $('body').append(`<div class="notification notification-success">
+                    $('.notification-success').remove(); // remove previous notification if exists
+                    const notification = $(`<div class="notification notification-success">
                         <div class="notification-icon">
                             <i class="fas fa-check-circle"></i>
                         </div>
@@ -512,26 +516,15 @@
                             <div class="notification-title">Success!</div>
                             <p class="notification-message">All records have been ${action}d successfully.</p>
                         </div>
-                    </div>`);
+                    </div>`).appendTo('body');
 
-                    // Add auto-hide for notification after 3 seconds
+                    // Refresh the page after notification
                     setTimeout(function() {
-                        $('.notification-success').fadeOut('slow', function() {
+                        notification.fadeOut('slow', function() {
                             $(this).remove();
+                            location.reload();
                         });
-                    }, 3000);<div class="notification notification-success">
-                                            <div class="notification-icon">
-                                                <i class="fas fa-check-circle"></i>
-                                            </div>
-                                            <div class="notification-content">
-                                                <div class="notification-title">Success!</div>
-                                                <p class="notification-message">All records have been approved successfully.</p>
-                                            </div>
-                                        </div>`);
-
-
-                    // Refresh the page after a delay (optional, for better UX)
-                    setTimeout(function(){ location.reload(); }, 2000); //2 second delay
+                    }, 2000);
                 },
                 error: function(xhr) {
                     // Hide processing modal
