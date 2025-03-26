@@ -436,7 +436,7 @@
                 method: 'POST',
                 contentType: 'application/json',
                 headers: {
-                    'X-CSRFToken': "{{ csrf_token() }}"
+                    'Content-Type': 'application/json'
                 },
                 data: JSON.stringify({
                     table: tableName,
@@ -492,7 +492,7 @@
                 method: 'POST',
                 contentType: 'application/json',
                 headers: {
-                    'X-CSRFToken': "{{ csrf_token() }}"
+                    'Content-Type': 'application/json'
                 },
                 data: JSON.stringify({
                     file_id: fileId,
