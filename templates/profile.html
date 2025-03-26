@@ -107,7 +107,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for file in current_user.xml_files.order_by(XMLFile.upload_date.desc()).limit(5).all() %}
+                                {% for file in current_user.xml_files.all() %}
                                 <tr>
                                     <td>{{ file.filename }}</td>
                                     <td>{{ file.bank_name }}</td>

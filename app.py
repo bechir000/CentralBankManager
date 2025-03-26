@@ -3,6 +3,7 @@ import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 from sqlalchemy.orm import DeclarativeBase
 
 # Set up logging
@@ -14,6 +15,7 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 login_manager = LoginManager()
+csrf = CSRFProtect()
 
 # Create the app
 app = Flask(__name__)
@@ -33,6 +35,7 @@ app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 # Initialize the extensions
 db.init_app(app)
 login_manager.init_app(app)
+csrf.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 
@@ -42,11 +45,15 @@ def load_user(user_id):
     from models import User
     return User.query.get(int(user_id))
 
-# Add context processor for current year
+# Add context processor for current year and CSRF token
 from datetime import datetime
 @app.context_processor
-def inject_year():
-    return {'current_year': datetime.now().year}
+def inject_global_variables():
+    from flask import session
+    return {
+        'current_year': datetime.now().year,
+        'csrf_token': lambda: session.get('_csrf_token', '')
+    }
 
 # Import routes after initializing the app to avoid circular imports
 from routes import *
