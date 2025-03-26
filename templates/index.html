@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="mb-4">Central Bank XML Data Processing</h1>
+        <p class="lead">
+            Welcome to the Central Bank XML Data Processing System. This application allows bank managers
+            to upload, validate, and process XML transaction files from various banks.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Statistics Cards -->
+    <div class="col-md-4 mb-4">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Pending Files</h5>
+                        <h2 class="display-4">{{ pending_files }}</h2>
+                    </div>
+                    <i class="fas fa-clock fa-3x"></i>
+                </div>
+                <p class="card-text mt-auto">Files waiting for validation</p>
+                <a href="{{ url_for('validate') }}" class="btn btn-outline-light mt-2">Validate Now</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Validated Files</h5>
+                        <h2 class="display-4">{{ validated_files }}</h2>
+                    </div>
+                    <i class="fas fa-check-circle fa-3x"></i>
+                </div>
+                <p class="card-text mt-auto">Files successfully processed</p>
+                <a href="{{ url_for('upload') }}" class="btn btn-outline-light mt-2">Upload More</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Quick Actions</h5>
+                    </div>
+                    <i class="fas fa-bolt fa-3x"></i>
+                </div>
+                <div class="d-grid gap-2 mt-3">
+                    <a href="{{ url_for('upload') }}" class="btn btn-outline-light">
+                        <i class="fas fa-upload me-2"></i> Upload XML Files
+                    </a>
+                    <a href="{{ url_for('validate') }}" class="btn btn-outline-light">
+                        <i class="fas fa-check-circle me-2"></i> Validate Pending Data
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Uploads -->
+<div class="row mt-2">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Uploads</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_uploads %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Upload Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in recent_uploads %}
+                            <tr>
+                                <td>{{ file.filename }}</td>
+                                <td>{{ file.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    {% if file.status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                    {% elif file.status == 'validated' %}
+                                    <span class="badge bg-success">Validated</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ file.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if file.status == 'pending' %}
+                                    <a href="{{ url_for('review', file_id=file.id) }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye me-1"></i> Review
+                                    </a>
+                                    {% else %}
+                                    <button class="btn btn-sm btn-secondary" disabled>
+                                        <i class="fas fa-check me-1"></i> Processed
+                                    </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center p-4">
+                    <i class="fas fa-file-upload fa-4x mb-3 text-muted"></i>
+                    <p class="lead">No files have been uploaded yet.</p>
+                    <a href="{{ url_for('upload') }}" class="btn btn-primary">Upload XML Files</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Process Explanation -->
+<div class="row mt-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">How It Works</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="p-3">
+                            <i class="fas fa-upload fa-3x mb-3 text-primary"></i>
+                            <h5>Upload</h5>
+                            <p>Upload XML files from banks containing transaction data</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="p-3">
+                            <i class="fas fa-file-code fa-3x mb-3 text-primary"></i>
+                            <h5>Extract</h5>
+                            <p>System extracts relevant data from XML and maps to intermediate tables</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="p-3">
+                            <i class="fas fa-check-circle fa-3x mb-3 text-primary"></i>
+                            <h5>Validate</h5>
+                            <p>Review and validate the extracted data for each bank</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="p-3">
+                            <i class="fas fa-database fa-3x mb-3 text-primary"></i>
+                            <h5>Process</h5>
+                            <p>Validated data is transferred to final tables for use</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="mb-4">
+            <i class="fas fa-upload me-2"></i>
+            Upload XML Files
+        </h1>
+        <p class="lead">
+            Upload XML files from banks containing transaction data. The system will process
+            the files and extract relevant data into intermediate tables for validation.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">XML File Upload</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data" id="upload-form">
+                    <div class="mb-4">
+                        <div class="upload-area p-5 rounded border text-center" id="drop-area">
+                            <i class="fas fa-cloud-upload-alt fa-4x mb-3 text-primary"></i>
+                            <h4>Drag & Drop XML Files Here</h4>
+                            <p>or</p>
+                            <div class="mb-3">
+                                <input type="file" class="form-control" name="xml_files" id="xml-files" accept=".xml" multiple required>
+                            </div>
+                            <small class="text-muted">You can select multiple files at once</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 d-none" id="selected-files-container">
+                        <label class="form-label">Selected Files:</label>
+                        <ul class="list-group" id="selected-files-list"></ul>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg" id="upload-button">
+                            <i class="fas fa-upload me-2"></i> Upload Files
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Instructions</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Only XML files are supported
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Files should contain valid transaction data
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Maximum file size: 16MB
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        You can upload multiple files at once
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-info-circle text-info me-2"></i>
+                        After uploading, you'll need to validate the extracted data
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Expected XML Structure</h5>
+            </div>
+            <div class="card-body">
+                <pre class="bg-dark p-3 rounded text-light"><code>&lt;mm_deal&gt;
+    &lt;value_date&gt;20230518&lt;/value_date&gt;
+    &lt;maturity_date&gt;20230519&lt;/maturity_date&gt;
+    &lt;maker_id&gt;00&lt;/maker_id&gt;
+    &lt;taker_id&gt;01&lt;/taker_id&gt;
+    &lt;leg&gt;
+        &lt;amount&gt;1000000&lt;/amount&gt;
+        &lt;quote&gt;
+            &lt;all_in&gt;5.25&lt;/all_in&gt;
+        &lt;/quote&gt;
+    &lt;/leg&gt;
+&lt;/mm_deal&gt;</code></pre>
+                <p class="small text-muted mt-2">
+                    Files must contain these required elements for successful processing.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('xml-files');
+        const selectedFilesContainer = document.getElementById('selected-files-container');
+        const selectedFilesList = document.getElementById('selected-files-list');
+        
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        // Highlight drop area when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        // Handle dropped files
+        dropArea.addEventListener('drop', handleDrop, false);
+        
+        // Handle manual file selection
+        fileInput.addEventListener('change', handleFiles, false);
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        function highlight() {
+            dropArea.classList.add('bg-light');
+        }
+        
+        function unhighlight() {
+            dropArea.classList.remove('bg-light');
+        }
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            handleFiles();
+        }
+        
+        function handleFiles() {
+            const files = fileInput.files;
+            
+            // Show selected files container if files were selected
+            if (files.length > 0) {
+                selectedFilesContainer.classList.remove('d-none');
+                selectedFilesList.innerHTML = '';
+                
+                // Create list items for each file
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const listItem = document.createElement('li');
+                    listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    
+                    // Check if file is XML
+                    const isXml = file.name.toLowerCase().endsWith('.xml');
+                    
+                    listItem.innerHTML = `
+                        <div>
+                            <i class="fas fa-file-code me-2 ${isXml ? 'text-success' : 'text-danger'}"></i>
+                            ${file.name}
+                            <small class="text-muted ms-2">(${formatFileSize(file.size)})</small>
+                        </div>
+                        ${isXml ? 
+                            '<span class="badge bg-success">Valid</span>' : 
+                            '<span class="badge bg-danger">Not XML</span>'
+                        }
+                    `;
+                    
+                    selectedFilesList.appendChild(listItem);
+                }
+            } else {
+                selectedFilesContainer.classList.add('d-none');
+            }
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,464 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">
+                <i class="fas fa-file-code me-2"></i>
+                Review Data: {{ xml_file.filename }}
+            </h1>
+            <div>
+                <a href="{{ url_for('validate') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Back to List
+                </a>
+            </div>
+        </div>
+        <p class="lead mt-2">
+            Review and validate the data extracted from this XML file.
+        </p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">File Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <p><strong>Filename:</strong> {{ xml_file.filename }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Upload Date:</strong> {{ xml_file.upload_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Status:</strong> <span class="badge bg-warning">{{ xml_file.status|capitalize }}</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-success me-2" id="approve-all-btn">
+                        <i class="fas fa-check me-1"></i> Approve All
+                    </button>
+                    <button class="btn btn-danger" id="reject-all-btn">
+                        <i class="fas fa-times me-1"></i> Reject All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs for different tables -->
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs" id="dataTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="mm320t-tab" data-bs-toggle="tab" data-bs-target="#mm320t-content" type="button" role="tab" aria-controls="mm320t-content" aria-selected="true">
+                            MM320T_SOUM_ACCORDE2106
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="mm110t-tab" data-bs-toggle="tab" data-bs-target="#mm110t-content" type="button" role="tab" aria-controls="mm110t-content" aria-selected="false">
+                            MM110T_OPM_JOUR2106
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="mm319t-tab" data-bs-toggle="tab" data-bs-target="#mm319t-content" type="button" role="tab" aria-controls="mm319t-content" aria-selected="false">
+                            MM319T_SOUM_BQ2106
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="mm334t-tab" data-bs-toggle="tab" data-bs-target="#mm334t-content" type="button" role="tab" aria-controls="mm334t-content" aria-selected="false">
+                            MM334T_SOUM_BQ2106
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="dataTabsContent">
+                    <!-- MM320T Tab Content -->
+                    <div class="tab-pane fade show active" id="mm320t-content" role="tabpanel" aria-labelledby="mm320t-tab">
+                        {% if mm320t_records %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered" id="mm320t-table">
+                                <thead>
+                                    <tr>
+                                        <th>DATE_OPER</th>
+                                        <th>DONNEUR</th>
+                                        <th>RECEVEUR</th>
+                                        <th>NUM_OPER</th>
+                                        <th>MONT</th>
+                                        <th>TAUX</th>
+                                        <th>DUREE</th>
+                                        <th>DATE_ECH</th>
+                                        <th>DATE_REGL</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in mm320t_records %}
+                                    <tr data-id="{{ record.id }}" data-table="mm320t" data-status="{{ record.validation_status }}">
+                                        <td>{{ record.DATE_OPER.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.DONNEUR }}</td>
+                                        <td>{{ record.RECEVEUR }}</td>
+                                        <td>{{ record.NUM_OPER }}</td>
+                                        <td>{{ record.MONT }}</td>
+                                        <td>{{ record.TAUX }}</td>
+                                        <td>{{ record.DUREE }}</td>
+                                        <td>{{ record.DATE_ECH.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.DATE_REGL.strftime('%Y-%m-%d') }}</td>
+                                        <td class="text-center">
+                                            {% if record.validation_status == 'pending' %}
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-sm btn-success approve-btn">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger reject-btn">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                            {% elif record.validation_status == 'approved' %}
+                                            <span class="badge bg-success">Approved</span>
+                                            {% elif record.validation_status == 'rejected' %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">No records found for MM320T_SOUM_ACCORDE2106</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- MM110T Tab Content -->
+                    <div class="tab-pane fade" id="mm110t-content" role="tabpanel" aria-labelledby="mm110t-tab">
+                        {% if mm110t_records %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered" id="mm110t-table">
+                                <thead>
+                                    <tr>
+                                        <th>DATE_OPER</th>
+                                        <th>DONNEUR</th>
+                                        <th>RECEVEUR</th>
+                                        <th>NUM_OPER</th>
+                                        <th>MONT</th>
+                                        <th>TAUX</th>
+                                        <th>DUREE</th>
+                                        <th>DATE_ECH</th>
+                                        <th>DATE_REGL</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in mm110t_records %}
+                                    <tr data-id="{{ record.id }}" data-table="mm110t" data-status="{{ record.validation_status }}">
+                                        <td>{{ record.DATE_OPER.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.DONNEUR }}</td>
+                                        <td>{{ record.RECEVEUR }}</td>
+                                        <td>{{ record.NUM_OPER }}</td>
+                                        <td>{{ record.MONT }}</td>
+                                        <td>{{ record.TAUX }}</td>
+                                        <td>{{ record.DUREE }}</td>
+                                        <td>{{ record.DATE_ECH.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.DATE_REGL.strftime('%Y-%m-%d') }}</td>
+                                        <td class="text-center">
+                                            {% if record.validation_status == 'pending' %}
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-sm btn-success approve-btn">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger reject-btn">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                            {% elif record.validation_status == 'approved' %}
+                                            <span class="badge bg-success">Approved</span>
+                                            {% elif record.validation_status == 'rejected' %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">No records found for MM110T_OPM_JOUR2106</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- MM319T Tab Content -->
+                    <div class="tab-pane fade" id="mm319t-content" role="tabpanel" aria-labelledby="mm319t-tab">
+                        {% if mm319t_records %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered" id="mm319t-table">
+                                <thead>
+                                    <tr>
+                                        <th>DATE_OPER</th>
+                                        <th>DONNEUR</th>
+                                        <th>RECEVEUR</th>
+                                        <th>NUM_OPER</th>
+                                        <th>MONT</th>
+                                        <th>TAUX</th>
+                                        <th>DUREE</th>
+                                        <th>DATE_ECH</th>
+                                        <th>DATE_REGL</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in mm319t_records %}
+                                    <tr data-id="{{ record.id }}" data-table="mm319t" data-status="{{ record.validation_status }}">
+                                        <td>{{ record.DATE_OPER.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.DONNEUR }}</td>
+                                        <td>{{ record.RECEVEUR }}</td>
+                                        <td>{{ record.NUM_OPER }}</td>
+                                        <td>{{ record.MONT }}</td>
+                                        <td>{{ record.TAUX }}</td>
+                                        <td>{{ record.DUREE }}</td>
+                                        <td>{{ record.DATE_ECH.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.DATE_REGL.strftime('%Y-%m-%d') }}</td>
+                                        <td class="text-center">
+                                            {% if record.validation_status == 'pending' %}
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-sm btn-success approve-btn">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger reject-btn">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                            {% elif record.validation_status == 'approved' %}
+                                            <span class="badge bg-success">Approved</span>
+                                            {% elif record.validation_status == 'rejected' %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">No records found for MM319T_SOUM_BQ2106</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- MM334T Tab Content -->
+                    <div class="tab-pane fade" id="mm334t-content" role="tabpanel" aria-labelledby="mm334t-tab">
+                        {% if mm334t_records %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered" id="mm334t-table">
+                                <thead>
+                                    <tr>
+                                        <th>DATE_OPER</th>
+                                        <th>DONNEUR</th>
+                                        <th>RECEVEUR</th>
+                                        <th>NUM_OPER</th>
+                                        <th>MONT</th>
+                                        <th>TAUX</th>
+                                        <th>DUREE</th>
+                                        <th>DATE_ECH</th>
+                                        <th>DATE_REGL</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in mm334t_records %}
+                                    <tr data-id="{{ record.id }}" data-table="mm334t" data-status="{{ record.validation_status }}">
+                                        <td>{{ record.DATE_OPER.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.DONNEUR }}</td>
+                                        <td>{{ record.RECEVEUR }}</td>
+                                        <td>{{ record.NUM_OPER }}</td>
+                                        <td>{{ record.MONT }}</td>
+                                        <td>{{ record.TAUX }}</td>
+                                        <td>{{ record.DUREE }}</td>
+                                        <td>{{ record.DATE_ECH.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.DATE_REGL.strftime('%Y-%m-%d') }}</td>
+                                        <td class="text-center">
+                                            {% if record.validation_status == 'pending' %}
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-sm btn-success approve-btn">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger reject-btn">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                            {% elif record.validation_status == 'approved' %}
+                                            <span class="badge bg-success">Approved</span>
+                                            {% elif record.validation_status == 'rejected' %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">No records found for MM334T_SOUM_BQ2106</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Processing Modal -->
+<div class="modal fade" id="processingModal" tabindex="-1" aria-labelledby="processingModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-4">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 id="processingModalLabel">Processing...</h5>
+                <p class="text-muted" id="processingMessage">Please wait while we process your request.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // Initialize DataTables
+        const tables = ['#mm320t-table', '#mm110t-table', '#mm319t-table', '#mm334t-table'];
+        tables.forEach(table => {
+            $(table).DataTable({
+                pageLength: 10,
+                language: {
+                    search: "Search records:",
+                    lengthMenu: "Show _MENU_ records per page"
+                }
+            });
+        });
+        
+        // Individual record validation
+        $('.approve-btn, .reject-btn').on('click', function() {
+            const button = $(this);
+            const row = button.closest('tr');
+            const recordId = row.data('id');
+            const tableName = row.data('table');
+            const action = button.hasClass('approve-btn') ? 'approve' : 'reject';
+            
+            validateRecord(tableName, recordId, action, row);
+        });
+        
+        // Validate all records
+        $('#approve-all-btn, #reject-all-btn').on('click', function() {
+            const action = $(this).attr('id') === 'approve-all-btn' ? 'approve' : 'reject';
+            const fileId = {{ xml_file.id }};
+            
+            // Show confirmation dialog
+            if (confirm(`Are you sure you want to ${action} all records?`)) {
+                validateAllRecords(fileId, action);
+            }
+        });
+        
+        // Function to validate a single record
+        function validateRecord(tableName, recordId, action, row) {
+            // Show processing modal
+            $('#processingMessage').text(`Processing record...`);
+            $('#processingModal').modal('show');
+            
+            $.ajax({
+                url: '/api/validate-record',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    table: tableName,
+                    id: recordId,
+                    action: action
+                }),
+                success: function(response) {
+                    // Hide processing modal
+                    $('#processingModal').modal('hide');
+                    
+                    // Update the row UI
+                    const actionCell = row.find('td:last-child');
+                    actionCell.empty();
+                    
+                    const badge = $('<span>')
+                        .addClass(`badge ${action === 'approve' ? 'bg-success' : 'bg-danger'}`)
+                        .text(action === 'approve' ? 'Approved' : 'Rejected');
+                    
+                    actionCell.append(badge);
+                    row.data('status', action === 'approve' ? 'approved' : 'rejected');
+                    
+                    // Show success message
+                    alert(`Record ${action}d successfully`);
+                    
+                    // Check if all records are processed, if so, refresh the page
+                    const pendingRecords = $('tr[data-status="pending"]').length;
+                    if (pendingRecords === 0) {
+                        location.reload();
+                    }
+                },
+                error: function(xhr) {
+                    // Hide processing modal
+                    $('#processingModal').modal('hide');
+                    
+                    // Show error message
+                    let errorMessage = 'An error occurred while processing your request.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    alert(`Error: ${errorMessage}`);
+                }
+            });
+        }
+        
+        // Function to validate all records at once
+        function validateAllRecords(fileId, action) {
+            // Show processing modal
+            $('#processingMessage').text(`Processing all records...`);
+            $('#processingModal').modal('show');
+            
+            $.ajax({
+                url: '/api/validate-all',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    file_id: fileId,
+                    action: action
+                }),
+                success: function(response) {
+                    // Hide processing modal
+                    $('#processingModal').modal('hide');
+                    
+                    // Show success message
+                    alert(`All records ${action}d successfully`);
+                    
+                    // Refresh the page
+                    location.reload();
+                },
+                error: function(xhr) {
+                    // Hide processing modal
+                    $('#processingModal').modal('hide');
+                    
+                    // Show error message
+                    let errorMessage = 'An error occurred while processing your request.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    alert(`Error: ${errorMessage}`);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

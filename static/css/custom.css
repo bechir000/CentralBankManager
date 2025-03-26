@@ -1,0 +1,137 @@
+/* Central Bank XML Data Processing System - Custom Styles */
+
+/* Custom styling for file upload area */
+.upload-area {
+    border: 2px dashed var(--bs-border-color);
+    background-color: var(--bs-dark-bg-subtle);
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: var(--bs-primary);
+    background-color: var(--bs-dark-bg-subtle);
+}
+
+/* Custom card styling */
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.15);
+    margin-bottom: 1.5rem;
+}
+
+/* Custom table styling for data visualization */
+.table-responsive {
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+/* Improve data tables */
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    padding-right: 2rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.375rem 0.75rem;
+    margin-left: 0.25rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--bs-border-color);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--bs-primary);
+    color: white !important;
+    border-color: var(--bs-primary);
+}
+
+/* Improve tab navigation */
+.nav-tabs .nav-link {
+    color: var(--bs-body-color);
+    border-radius: 0.25rem 0.25rem 0 0;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--bs-primary);
+    font-weight: 500;
+}
+
+/* Custom styling for cards with icons */
+.card .card-icon {
+    font-size: 2.5rem;
+    color: var(--bs-primary);
+}
+
+/* Custom styling for badges */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+}
+
+/* Custom styling for buttons */
+.btn {
+    font-weight: 500;
+}
+
+.btn-icon {
+    padding: 0.375rem 0.5rem;
+}
+
+/* Custom styling for alerts */
+.alert {
+    border-left: 4px solid transparent;
+}
+
+.alert-success {
+    border-left-color: var(--bs-success);
+}
+
+.alert-danger {
+    border-left-color: var(--bs-danger);
+}
+
+.alert-warning {
+    border-left-color: var(--bs-warning);
+}
+
+.alert-info {
+    border-left-color: var(--bs-info);
+}
+
+/* Custom styling for the footer */
+footer {
+    border-top: 1px solid var(--bs-border-color);
+}
+
+/* Custom spacing for main container */
+@media (min-width: 992px) {
+    .container {
+        max-width: 1200px;
+    }
+}
+
+/* Improve code display */
+pre code {
+    font-size: 0.875rem;
+}
+
+/* Animate validation actions */
+.approve-btn, .reject-btn {
+    transition: transform 0.1s ease;
+}
+
+.approve-btn:hover, .reject-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Status badges in tables */
+td .badge {
+    min-width: 70px;
+}

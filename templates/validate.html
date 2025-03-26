@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="mb-4">
+            <i class="fas fa-check-circle me-2"></i>
+            Validate Data
+        </h1>
+        <p class="lead">
+            Review and validate data extracted from XML files. Once validated, data will be transferred to final tables.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Pending Files for Validation</h5>
+            </div>
+            <div class="card-body">
+                {% if pending_files %}
+                <div class="table-responsive">
+                    <table class="table table-hover" id="pending-files-table">
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Upload Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in pending_files %}
+                            <tr>
+                                <td>{{ file.filename }}</td>
+                                <td>{{ file.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <span class="badge bg-warning">Pending</span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('review', file_id=file.id) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i> Review & Validate
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center p-5">
+                    <i class="fas fa-check-circle fa-4x mb-3 text-muted"></i>
+                    <p class="lead">No pending files to validate.</p>
+                    <a href="{{ url_for('upload') }}" class="btn btn-primary">Upload XML Files</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Validation Process</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="p-3">
+                            <i class="fas fa-search fa-3x mb-3 text-primary"></i>
+                            <h5>Review</h5>
+                            <p>Examine the extracted data for accuracy</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="p-3">
+                            <i class="fas fa-check fa-3x mb-3 text-primary"></i>
+                            <h5>Validate</h5>
+                            <p>Approve correct records individually or in bulk</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="p-3">
+                            <i class="fas fa-times fa-3x mb-3 text-primary"></i>
+                            <h5>Reject</h5>
+                            <p>Reject incorrect records that should not be processed</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="p-3">
+                            <i class="fas fa-database fa-3x mb-3 text-primary"></i>
+                            <h5>Transfer</h5>
+                            <p>Validated data is moved to final tables automatically</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('#pending-files-table').DataTable({
+            order: [[1, 'desc']],
+            language: {
+                search: "Search files:",
+                lengthMenu: "Show _MENU_ files per page",
+                info: "Showing _START_ to _END_ of _TOTAL_ files",
+                emptyTable: "No files available for validation"
+            }
+        });
+    });
+</script>
+{% endblock %}
