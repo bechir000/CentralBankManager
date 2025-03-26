@@ -98,10 +98,8 @@ def validate():
 @app.route('/review/<int:file_id>')
 @login_required
 def review(file_id):
-    # Check if user has validator or admin role
-    if not (current_user.has_role('validator') or current_user.has_role('admin')):
-        flash('You do not have permission to review files', 'danger')
-        return redirect(url_for('index'))
+    # Allow any authenticated user to review files
+    xml_file = XMLFile.query.get_or_404(file_id)
         
     xml_file = XMLFile.query.get_or_404(file_id)
     
