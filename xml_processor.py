@@ -92,7 +92,6 @@ def process_deal(deal, deal_idx, xml_file_id):
         
         # Truncate maker_id to 2 characters if needed
         if len(maker_id) > 2:
-            logger.warning(f"Truncating maker_id from {maker_id} to {maker_id[:2]}")
             maker_id = maker_id[:2]
         
         # Extract taker_id from the XML structure
@@ -115,7 +114,6 @@ def process_deal(deal, deal_idx, xml_file_id):
             
         # Truncate taker_id to 2 characters if needed
         if len(taker_id) > 2:
-            logger.warning(f"Truncating taker_id from {taker_id} to {taker_id[:2]}")
             taker_id = taker_id[:2]
         
         # Find the first leg element
