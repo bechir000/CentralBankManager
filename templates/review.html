@@ -502,11 +502,21 @@
                     // Hide processing modal
                     $('#processingModal').modal('hide');
 
-                    // Show success message
-                    alert(`All records ${action}d successfully`);
+                    // Show success notification
+                    $('.notification-success').remove(); // remove previous notification if exists.
+                    $('body').append(`<div class="notification notification-success">
+                                            <div class="notification-icon">
+                                                <i class="fas fa-check-circle"></i>
+                                            </div>
+                                            <div class="notification-content">
+                                                <div class="notification-title">Success!</div>
+                                                <p class="notification-message">All records have been approved successfully.</p>
+                                            </div>
+                                        </div>`);
 
-                    // Refresh the page
-                    location.reload();
+
+                    // Refresh the page after a delay (optional, for better UX)
+                    setTimeout(function(){ location.reload(); }, 2000); //2 second delay
                 },
                 error: function(xhr) {
                     // Hide processing modal
