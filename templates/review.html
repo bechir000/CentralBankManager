@@ -424,10 +424,38 @@
             const action = $(this).attr('id') === 'approve-all-btn' ? 'approve' : 'reject';
             const fileId = {{ xml_file.id }};
 
-            // Show confirmation dialog
-            if (confirm(`Are you sure you want to ${action} all records?`)) {
+            // Show confirmation modal
+            const confirmModal = $(`
+                <div class="modal fade" id="confirmActionModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">Confirm Action</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center py-4">
+                                <i class="fas fa-question-circle text-primary mb-3" style="font-size: 3rem;"></i>
+                                <h4 class="mb-3">Are you sure?</h4>
+                                <p class="mb-0">Do you want to ${action} all records?</p>
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary confirm-action">Yes, ${action}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).appendTo('body');
+
+            const modal = new bootstrap.Modal(confirmModal);
+            modal.show();
+
+            // Handle confirmation
+            confirmModal.find('.confirm-action').on('click', function() {
+                modal.hide();
+                confirmModal.remove();
                 validateAllRecords(fileId, action);
-            }
+            });
         });
 
         // Function to validate a single record
