@@ -19,12 +19,13 @@ login_manager = LoginManager()
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET") or "super-secret-key-for-development"
 
+# Import database configuration
+from config.database import get_database_config
+
 # Configure the database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "pool_recycle": 300,
-    "pool_pre_ping": True,
-}
+db_config = get_database_config()
+app.config["SQLALCHEMY_DATABASE_URI"] = db_config["SQLALCHEMY_DATABASE_URI"]
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = db_config["SQLALCHEMY_ENGINE_OPTIONS"]
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Set maximum file upload size to 16MB
