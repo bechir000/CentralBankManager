@@ -119,9 +119,7 @@ def review(file_id):
 @app.route('/api/validate-record', methods=['POST'])
 @login_required
 def validate_record():
-    # Check if user has validator or admin role
-    if not (current_user.has_role('validator') or current_user.has_role('admin')):
-        return jsonify({'status': 'error', 'message': 'You do not have permission to validate records'}), 403
+    # Allow any authenticated user to validate records
     try:
         data = request.json
         table_name = data.get('table')
@@ -222,9 +220,7 @@ def validate_record():
 @app.route('/api/validate-all', methods=['POST'])
 @login_required
 def validate_all():
-    # Check if user has validator or admin role
-    if not (current_user.has_role('validator') or current_user.has_role('admin')):
-        return jsonify({'status': 'error', 'message': 'You do not have permission to validate records'}), 403
+    # Allow any authenticated user to validate all records
         
     try:
         data = request.json
