@@ -22,6 +22,13 @@
             </div>
             <div class="card-body">
                 <form method="POST" enctype="multipart/form-data" id="upload-form">
+                    <div class="mb-3">
+                        <label for="bank_name" class="form-label fw-bold">Bank Name</label>
+                        <input type="text" class="form-control" id="bank_name" name="bank_name" required 
+                               placeholder="Enter the name of the bank submitting this data">
+                        <div class="form-text">This helps identify the source of the XML data for later reference.</div>
+                    </div>
+                    
                     <div class="mb-4">
                         <div class="upload-area p-5 rounded border text-center" id="drop-area">
                             <i class="fas fa-cloud-upload-alt fa-4x mb-3 text-primary"></i>

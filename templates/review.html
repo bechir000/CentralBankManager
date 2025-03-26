@@ -28,13 +28,16 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <p><strong>Filename:</strong> {{ xml_file.filename }}</p>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <p><strong>Bank Name:</strong> {{ xml_file.bank_name }}</p>
+                    </div>
+                    <div class="col-md-3">
                         <p><strong>Upload Date:</strong> {{ xml_file.upload_date.strftime('%Y-%m-%d %H:%M') }}</p>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <p><strong>Status:</strong> <span class="badge bg-warning">{{ xml_file.status|capitalize }}</span></p>
                     </div>
                 </div>
@@ -91,6 +94,7 @@
                                 <thead>
                                     <tr>
                                         <th>DATE_OPER</th>
+                                        <th>CODE_OPER</th>
                                         <th>DONNEUR</th>
                                         <th>RECEVEUR</th>
                                         <th>NUM_OPER</th>
@@ -98,7 +102,12 @@
                                         <th>TAUX</th>
                                         <th>DUREE</th>
                                         <th>DATE_ECH</th>
+                                        <th>TYPE_PLACE</th>
                                         <th>DATE_REGL</th>
+                                        <th>FLAGCPT_ADMIS</th>
+                                        <th>FLAGCPT_TOMBE</th>
+                                        <th>ETAT_OPER</th>
+                                        <th>CODE_ISIN</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -106,6 +115,7 @@
                                     {% for record in mm320t_records %}
                                     <tr data-id="{{ record.id }}" data-table="mm320t" data-status="{{ record.validation_status }}">
                                         <td>{{ record.DATE_OPER.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.CODE_OPER }}</td>
                                         <td>{{ record.DONNEUR }}</td>
                                         <td>{{ record.RECEVEUR }}</td>
                                         <td>{{ record.NUM_OPER }}</td>
@@ -113,7 +123,12 @@
                                         <td>{{ record.TAUX }}</td>
                                         <td>{{ record.DUREE }}</td>
                                         <td>{{ record.DATE_ECH.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.TYPE_PLACE }}</td>
                                         <td>{{ record.DATE_REGL.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.FLAGCPT_ADMIS }}</td>
+                                        <td>{{ record.FLAGCPT_TOMBE }}</td>
+                                        <td>{{ record.ETAT_OPER }}</td>
+                                        <td>{{ record.CODE_ISIN }}</td>
                                         <td class="text-center">
                                             {% if record.validation_status == 'pending' %}
                                             <div class="btn-group" role="group">
@@ -148,6 +163,7 @@
                                 <thead>
                                     <tr>
                                         <th>DATE_OPER</th>
+                                        <th>CODE_OPER</th>
                                         <th>DONNEUR</th>
                                         <th>RECEVEUR</th>
                                         <th>NUM_OPER</th>
@@ -155,7 +171,12 @@
                                         <th>TAUX</th>
                                         <th>DUREE</th>
                                         <th>DATE_ECH</th>
+                                        <th>TYPE_PLACE</th>
                                         <th>DATE_REGL</th>
+                                        <th>FLAGCPT_ADMIS</th>
+                                        <th>FLAGCPT_TOMBE</th>
+                                        <th>ETAT_OPER</th>
+                                        <th>CODE_ISIN</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -163,6 +184,7 @@
                                     {% for record in mm110t_records %}
                                     <tr data-id="{{ record.id }}" data-table="mm110t" data-status="{{ record.validation_status }}">
                                         <td>{{ record.DATE_OPER.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.CODE_OPER }}</td>
                                         <td>{{ record.DONNEUR }}</td>
                                         <td>{{ record.RECEVEUR }}</td>
                                         <td>{{ record.NUM_OPER }}</td>
@@ -170,7 +192,12 @@
                                         <td>{{ record.TAUX }}</td>
                                         <td>{{ record.DUREE }}</td>
                                         <td>{{ record.DATE_ECH.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.TYPE_PLACE }}</td>
                                         <td>{{ record.DATE_REGL.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.FLAGCPT_ADMIS }}</td>
+                                        <td>{{ record.FLAGCPT_TOMBE }}</td>
+                                        <td>{{ record.ETAT_OPER }}</td>
+                                        <td>{{ record.CODE_ISIN }}</td>
                                         <td class="text-center">
                                             {% if record.validation_status == 'pending' %}
                                             <div class="btn-group" role="group">
@@ -205,6 +232,7 @@
                                 <thead>
                                     <tr>
                                         <th>DATE_OPER</th>
+                                        <th>CODE_OPER</th>
                                         <th>DONNEUR</th>
                                         <th>RECEVEUR</th>
                                         <th>NUM_OPER</th>
@@ -212,7 +240,12 @@
                                         <th>TAUX</th>
                                         <th>DUREE</th>
                                         <th>DATE_ECH</th>
+                                        <th>TYPE_PLACE</th>
                                         <th>DATE_REGL</th>
+                                        <th>FLAGCPT_ADMIS</th>
+                                        <th>FLAGCPT_TOMBE</th>
+                                        <th>ETAT_OPER</th>
+                                        <th>CODE_ISIN</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -220,6 +253,7 @@
                                     {% for record in mm319t_records %}
                                     <tr data-id="{{ record.id }}" data-table="mm319t" data-status="{{ record.validation_status }}">
                                         <td>{{ record.DATE_OPER.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.CODE_OPER }}</td>
                                         <td>{{ record.DONNEUR }}</td>
                                         <td>{{ record.RECEVEUR }}</td>
                                         <td>{{ record.NUM_OPER }}</td>
@@ -227,7 +261,12 @@
                                         <td>{{ record.TAUX }}</td>
                                         <td>{{ record.DUREE }}</td>
                                         <td>{{ record.DATE_ECH.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.TYPE_PLACE }}</td>
                                         <td>{{ record.DATE_REGL.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.FLAGCPT_ADMIS }}</td>
+                                        <td>{{ record.FLAGCPT_TOMBE }}</td>
+                                        <td>{{ record.ETAT_OPER }}</td>
+                                        <td>{{ record.CODE_ISIN }}</td>
                                         <td class="text-center">
                                             {% if record.validation_status == 'pending' %}
                                             <div class="btn-group" role="group">
@@ -262,6 +301,7 @@
                                 <thead>
                                     <tr>
                                         <th>DATE_OPER</th>
+                                        <th>CODE_OPER</th>
                                         <th>DONNEUR</th>
                                         <th>RECEVEUR</th>
                                         <th>NUM_OPER</th>
@@ -269,7 +309,12 @@
                                         <th>TAUX</th>
                                         <th>DUREE</th>
                                         <th>DATE_ECH</th>
+                                        <th>TYPE_PLACE</th>
                                         <th>DATE_REGL</th>
+                                        <th>FLAGCPT_ADMIS</th>
+                                        <th>FLAGCPT_TOMBE</th>
+                                        <th>ETAT_OPER</th>
+                                        <th>CODE_ISIN</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -277,6 +322,7 @@
                                     {% for record in mm334t_records %}
                                     <tr data-id="{{ record.id }}" data-table="mm334t" data-status="{{ record.validation_status }}">
                                         <td>{{ record.DATE_OPER.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.CODE_OPER }}</td>
                                         <td>{{ record.DONNEUR }}</td>
                                         <td>{{ record.RECEVEUR }}</td>
                                         <td>{{ record.NUM_OPER }}</td>
@@ -284,7 +330,12 @@
                                         <td>{{ record.TAUX }}</td>
                                         <td>{{ record.DUREE }}</td>
                                         <td>{{ record.DATE_ECH.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.TYPE_PLACE }}</td>
                                         <td>{{ record.DATE_REGL.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ record.FLAGCPT_ADMIS }}</td>
+                                        <td>{{ record.FLAGCPT_TOMBE }}</td>
+                                        <td>{{ record.ETAT_OPER }}</td>
+                                        <td>{{ record.CODE_ISIN }}</td>
                                         <td class="text-center">
                                             {% if record.validation_status == 'pending' %}
                                             <div class="btn-group" role="group">

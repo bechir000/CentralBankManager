@@ -26,6 +26,7 @@
                         <thead>
                             <tr>
                                 <th>File Name</th>
+                                <th>Bank Name</th>
                                 <th>Upload Date</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -35,6 +36,7 @@
                             {% for file in pending_files %}
                             <tr>
                                 <td>{{ file.filename }}</td>
+                                <td>{{ file.bank_name }}</td>
                                 <td>{{ file.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
                                 <td>
                                     <span class="badge bg-warning">Pending</span>

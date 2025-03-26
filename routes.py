@@ -40,6 +40,11 @@ def upload():
             return redirect(request.url)
         
         files = request.files.getlist('xml_files')
+        bank_name = request.form.get('bank_name', '')
+        
+        if not bank_name:
+            flash('Bank name is required', 'danger')
+            return redirect(request.url)
         
         if not files or files[0].filename == '':
             flash('No selected file', 'danger')
@@ -56,8 +61,8 @@ def upload():
                 file.save(temp_path)
                 
                 try:
-                    # Create a new XMLFile record
-                    xml_file = XMLFile(filename=filename, status='pending')
+                    # Create a new XMLFile record with bank name
+                    xml_file = XMLFile(filename=filename, bank_name=bank_name, status='pending')
                     db.session.add(xml_file)
                     db.session.commit()
                     
@@ -79,7 +84,7 @@ def upload():
                 flash(f'File {file.filename} is not allowed. Only XML files are permitted.', 'danger')
         
         if success_count > 0:
-            flash(f'Successfully uploaded and processed {success_count} file(s).', 'success')
+            flash(f'Successfully uploaded and processed {success_count} file(s) for {bank_name}.', 'success')
         
         if error_count > 0:
             flash(f'Failed to process {error_count} file(s). See details above.', 'warning')

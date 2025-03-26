@@ -79,6 +79,7 @@ class XMLFile(db.Model):
     __tablename__ = 'xml_files'
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255), nullable=False)
+    bank_name = db.Column(db.String(100), nullable=False)
     upload_date = db.Column(db.DateTime, default=datetime.now)
     status = db.Column(db.String(20), default='pending')
     
