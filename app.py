@@ -69,9 +69,7 @@ with app.app_context():
     from models import Role
     roles = {
         'admin': 'Administrator with full access to the system',
-        'validator': 'User who can validate and approve data',
-        'uploader': 'User who can upload XML files but cannot validate them',
-        'viewer': 'User who can only view data but cannot modify it'
+        'user': 'Regular user with basic access'
     }
     
     for role_name, description in roles.items():

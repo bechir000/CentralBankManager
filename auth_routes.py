@@ -62,12 +62,12 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         # Create a new user
-        viewer_role = Role.query.filter_by(name='viewer').first()
+        user_role = Role.query.filter_by(name='user').first()
         user = User(
             username=form.username.data,
             email=form.email.data,
             is_active=True,
-            role=viewer_role  # New users get 'viewer' role by default
+            role=user_role  # New users get 'user' role by default
         )
         user.set_password(form.password.data)
         

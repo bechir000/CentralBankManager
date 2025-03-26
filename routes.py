@@ -36,10 +36,10 @@ def index():
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
-    # Check if user has uploader or admin role
-    if not (current_user.has_role('uploader') or current_user.has_role('admin')):
-        flash('You do not have permission to upload files', 'danger')
-        return redirect(url_for('index'))
+    # Check if user is logged in
+    if not current_user.is_authenticated:
+        flash('You must be logged in to upload files', 'danger')
+        return redirect(url_for('login'))
         
     form = UploadForm()
     if form.validate_on_submit():
@@ -86,9 +86,9 @@ def upload():
 @app.route('/validate')
 @login_required
 def validate():
-    # Check if user has validator or admin role
-    if not (current_user.has_role('validator') or current_user.has_role('admin')):
-        flash('You do not have permission to validate files', 'danger')
+    # Check if user is admin
+    if not current_user.has_role('admin'):
+        flash('Only administrators can validate files', 'danger')
         return redirect(url_for('index'))
         
     # Get all pending XML files
