@@ -505,21 +505,6 @@
                     // Show success notification
                     $('.notification-success').remove(); // remove previous notification if exists.
                     $('body').append(`<div class="notification notification-success">
-                        <div class="notification-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-title">Success!</div>
-                            <p class="notification-message">All records have been ${action}d successfully.</p>
-                        </div>
-                    </div>`);
-
-                    // Add auto-hide for notification after 3 seconds
-                    setTimeout(function() {
-                        $('.notification-success').fadeOut('slow', function() {
-                            $(this).remove();
-                        });
-                    }, 3000);<div class="notification notification-success">
                                             <div class="notification-icon">
                                                 <i class="fas fa-check-circle"></i>
                                             </div>
