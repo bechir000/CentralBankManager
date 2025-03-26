@@ -492,7 +492,7 @@
                 method: 'POST',
                 contentType: 'application/json',
                 headers: {
-                    'X-CSRFToken': "{{ csrf_token() }}"
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
                 data: JSON.stringify({
                     file_id: fileId,
